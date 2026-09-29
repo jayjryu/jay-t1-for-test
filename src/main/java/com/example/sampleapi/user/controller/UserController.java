@@ -12,8 +12,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -46,5 +50,26 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // Vulnerability: SQL Injection endpoint
+    @GetMapping("/search")
+    public ResponseEntity<List<UserResponse>> searchUsers(@RequestParam("name") String name) {
+        return ResponseEntity.ok(userService.searchUsersByNameUnsafe(name));
+    }
+
+    // Vulnerability: Path Traversal (Arbitrary File Read)
+    @GetMapping("/files")
+    public ResponseEntity<String> readUserAttachment(@RequestParam("filePath") String filePath) throws IOException {
+        File file = new File("/var/app/data/" + filePath);
+        try (FileInputStream fis = new FileInputStream(file)) {
+            return ResponseEntity.ok(new String(fis.readAllBytes()));
+        }
+    }
+
+    // Vulnerability: Remote Command Execution / Command Injection
+    @PostMapping("/diagnostics")
+    public ResponseEntity<String> runDiagnostics(@RequestParam("cmd") String cmd) {
+        return ResponseEntity.ok(userService.executeUserDiagnosticCommand(cmd));
     }
 }
