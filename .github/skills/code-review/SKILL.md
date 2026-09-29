@@ -1,10 +1,23 @@
 ---
 name: code-review
-description: Custom instructions for GitHub Copilot Code Review
+description: "Review pull requests with GitHub Copilot. Use for code review, pull request review, re-review, or reviewing changed code."
 ---
 
-# Code Review Instructions
+# Code Review
 
-## Language and Style Guidelines
-- 모든 코드 리뷰 코멘트, 변경 권장 사유, 요약 설명은 반드시 **한국어**로 작성해야 합니다.
-- 프로그래밍 언어 키워드, 함수명, 메서드명, 클래스명, 인터페이스명, 변수명, 패키지 경로, HTTP API 엔드포인트, 전문 보안 용어(예: SQL Injection, Path Traversal, Command Injection, Insecure Deserialization 등)는 인위적으로 번역하지 말고 **원문 그대로** 표기하세요.
+Review the pull request diff and the relevant surrounding code, tests, configuration, and dependencies before reporting an issue. Do not infer defects from a diff fragment alone.
+
+Report only actionable findings that can cause a bug, security risk, regression, compatibility problem, or missing test coverage. Ignore formatting, lint-only issues, subjective preferences, and unrelated existing code.
+
+For every finding:
+
+- Cite the file and line.
+- Explain the concrete impact and reproduction path.
+- Give a focused correction or a clarifying question.
+- State the validation needed after the change.
+
+Write all review summaries and comments in Korean. Preserve source-code identifiers, function names, API names, commands, paths, error messages, and technical terms in their original form.
+
+Use `High`, `Medium`, or `Low` only when the severity reflects verified impact. Treat Copilot feedback as advisory: a human reviewer must validate findings and approve the pull request.
+
+For a re-review, inspect only changes since the previous review and do not repeat resolved comments unless the issue remains present.
